@@ -4,13 +4,7 @@ note
 		Calkin-Wilf trees.
 		An infinite lazy data structure for enumerating the strictly-positive rationals.
 
-		This implementation is not actually infinite, as class RATIONAL_NUMBER
-		currently uses INTEGER for the numerator and denominator, so if
-		you iterate far enough you get an exception (or if you navigate through the tree
-		manually, eventually you will go somewhere you shouldn't).
-
-		But we take advantage of that to inherit from LINEAR, which implements a breadth-first
-		traversal over the rationals.
+		
 	]"
 
 	documentation: "https://en.wikipedia.org/wiki/Calkin-Wilf_tree"
@@ -19,7 +13,7 @@ class CALKIN_WILF
 
 inherit
 
-	LINEAR [LAZY_BINARY_TREE [RATIONAL_NUMBER]]
+	LINEAR [LAZY_BINARY_TREE [GMP_RATIONAL]]
 		rename
 			item as linear_item
 		end
@@ -33,40 +27,38 @@ feature {NONE} -- Initialization
 	make
 			-- Create `root'.
 		do
-			left_child_agent := agent left_child
-			right_child_agent := agent right_child
-			create root.make ((create {RATIONAL_NUMBER}.make (1, 1)), Void, left_child_agent, right_child_agent)
+			child_agent := agent child
+			create root.make ((create {GMP_RATIONAL}.make_integer_32 (1)), Void, child_agent)
 			start
 		end
 
 feature -- Access
 	
-	root: LAZY_BINARY_TREE [RATIONAL_NUMBER]
+	root: LAZY_BINARY_TREE [GMP_RATIONAL]
 			-- 1/1
 
-	linear_item: LAZY_BINARY_TREE [RATIONAL_NUMBER]
+	linear_item: LAZY_BINARY_TREE [GMP_RATIONAL]
 			-- <Precursor>
 
-	left_child_agent: FUNCTION [LAZY_BINARY_TREE [RATIONAL_NUMBER], LAZY_BINARY_TREE [RATIONAL_NUMBER]]
-			-- Function from a node to its left child
+	child_agent: FUNCTION [LAZY_BINARY_TREE [GMP_RATIONAL], NATURAL, LAZY_BINARY_TREE [GMP_RATIONAL]]
+			-- Function from a node to its n_th child
 
-	right_child_agent: FUNCTION [LAZY_BINARY_TREE [RATIONAL_NUMBER], LAZY_BINARY_TREE [RATIONAL_NUMBER]]
-			-- Function from a node to its left child
 
-	left_child (a_node: LAZY_BINARY_TREE [RATIONAL_NUMBER]): LAZY_BINARY_TREE [RATIONAL_NUMBER]
+	child (a_node: LAZY_BINARY_TREE [GMP_RATIONAL]; a_n_th: NATURAL): LAZY_BINARY_TREE [GMP_RATIONAL]
 			-- Left child of `a_node'
+		require
+			a_n_th_strictly_positive: a_n_th > 0
+			a_n_th_small_enough: a_n_th <= a_node.count
 		do
-			create Result.make (create {RATIONAL_NUMBER}.make (
-				a_node.item.numerator, a_node.item.numerator + a_node.item.denominator),
-				a_node, left_child_agent, right_child_agent)
-		end
-
-	right_child (a_node: LAZY_BINARY_TREE [RATIONAL_NUMBER]): LAZY_BINARY_TREE [RATIONAL_NUMBER]
-			-- Right child of `a_node'
-		do
-			create Result.make (create {RATIONAL_NUMBER}.make (
-				a_node.item.numerator + a_node.item.denominator, a_node.item.denominator),
-				a_node, left_child_agent, right_child_agent)
+			if a_n_th = 1 then
+				create Result.make (create {GMP_RATIONAL}.make_gmp_integer_2 (
+					a_node.item.numerator, a_node.item.numerator + a_node.item.denominator),
+					a_node, child_agent)
+			else
+				create Result.make (create {GMP_RATIONAL}.make_gmp_integer_2 (
+					a_node.item.numerator + a_node.item.denominator, a_node.item.denominator),
+				a_node, child_agent)
+			end
 		end
 
 	index: INTEGER

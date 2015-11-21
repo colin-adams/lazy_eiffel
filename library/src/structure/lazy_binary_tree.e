@@ -1,14 +1,15 @@
 note
 
 	description: "[
-		Infinite binary trees.
-		Children are evaluated by a pair of agents (one for the left node, one for the right node)
+		Binary trees of potentially infinite depth.
 	]"
-
-	documentation: "https://en.wikipedia.org/wiki/Calkin-Wilf_tree"
 
 class LAZY_BINARY_TREE [G]
 
+inherit
+
+	LAZY_TREE [G]
+	
 create
 
 	make
@@ -17,54 +18,37 @@ feature {NONE} -- Initialization
 
 	make (a_value: attached G;
 		a_parent: detachable LAZY_BINARY_TREE [G];
-		a_left, a_right: FUNCTION [LAZY_BINARY_TREE [G], LAZY_BINARY_TREE [G]])
+		a_child_function: like child_function)
 			-- Initialize attributes.
 		do
 			item := a_value
-			left_child_function := a_left
-			right_child_function := a_right
+			child_function := a_child_function
 			parent := a_parent
 		ensure
 			item_aliased: item = a_value
 			parent_aliased: parent = a_parent
-			left_child_function_aliased: left_child_function = a_left
-			right_child_function_aliased: right_child_function = a_right
+			child_function_aliased: child_function = a_child_function
 		end
 
 feature -- Access
 
-	item: attached G
-			-- Value at `Current' node
-
-	parent: detachable LAZY_BINARY_TREE [G]
-			-- Parent node, if not `is_root'
-
-	left_child_function: FUNCTION [LAZY_BINARY_TREE [G], LAZY_BINARY_TREE [G]]
-			-- Function to return left child of `Current'
-
-	right_child_function: FUNCTION [LAZY_BINARY_TREE [G], LAZY_BINARY_TREE [G]]
-			-- Function to return right child of `Current'
-
-	is_root: BOOLEAN
-			-- Is this the root node of the tree?
-		do
-			Result := not attached parent
-		ensure
-			definition: Result = not attached parent
-		end
-
 	left_child: LAZY_BINARY_TREE [G]
 			-- First child of `Current'
 		do
-			Result := left_child_function (Current)
+			Result := n_th_child (1)
 		end
 
 	right_child: LAZY_BINARY_TREE [G]
 			-- Second child of `Current'
 		do
-			Result := right_child_function (Current)
+			Result := n_th_child (2)
 		end
-	
+
+feature -- Measurement
+
+	count: NATURAL = 2
+			-- Number of immediate children
+
 end
 
 	

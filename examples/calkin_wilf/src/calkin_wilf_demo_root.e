@@ -31,7 +31,7 @@ feature -- Access
 	tree: CALKIN_WILF
 			-- The Calkin-Wilf enumeration of the rationals
 
-	iterator: LINEAR_ITERATOR [LAZY_BINARY_TREE [RATIONAL_NUMBER]]
+	iterator: LINEAR_ITERATOR [LAZY_BINARY_TREE [GMP_RATIONAL]]
 			-- Breadth-first traversal of the Calkin-Wilf tree
 	
 feature -- Basic operations
@@ -45,13 +45,13 @@ feature -- Basic operations
 
 feature {NONE} -- Agents
 
-	print_value (a_node: LAZY_BINARY_TREE [RATIONAL_NUMBER])
+	print_value (a_node: LAZY_BINARY_TREE [GMP_RATIONAL])
 			-- Print the rational value in `a_node'.
 		do
 			print (a_node.item.out + "%N")
 		end
 	
-	after_nth (a_node: LAZY_BINARY_TREE [RATIONAL_NUMBER]; a_nth: INTEGER): BOOLEAN
+	after_nth (a_node: LAZY_BINARY_TREE [GMP_RATIONAL]; a_nth: INTEGER): BOOLEAN
 			-- Is `a_node' beyond the `a_nth' node?
 		do
 			Result := iterator.target.index > a_nth

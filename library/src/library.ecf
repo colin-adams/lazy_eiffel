@@ -12,6 +12,7 @@
 		</option>
 		<setting name="console_application" value="true"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
+		<library name="gmp" location="./../../../eiffel_gmp/library/src/library.ecf"/>
 		<cluster name="lazy_eiffel" location=".\" recursive="true" />
 	</target>
 </system>
