@@ -7,7 +7,7 @@
 		</option>
 		<setting name="console_application" value="true"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
-		<library name="eiffel_gmp" location="\home\colin\eiffel_gmp\library\src\library.ecf"/>
+		<library name="eiffel_gmp" location="iron:gmp:library/src/library.ecf"/>
 		<library name="lazy_eiffel" location="..\..\..\library\src\library.ecf" readonly="false"/>
 		<cluster name="calkin_wilf" location=".\" recursive="true">
 			<file_rule>
